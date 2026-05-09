@@ -25,33 +25,41 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          # Removido cache npm para evitar o erro de lock file caso ele não exista
 
       - name: Install dependencies
         run: npm install
 
       - name: Build
         run: npm run build
-        env:
-          VITE_BASE_PATH: /checklist-makeover/ # Garante que o build saiba o caminho base
+
+      - name: Create static index.html
+        run: |
+          JS=$(ls dist/client/assets/*.js | grep -v 'index-' | head -1 || ls dist/client/assets/index-*.js | head -1)
+          JS=$(basename $JS)
+          CSS=$(basename $(ls dist/client/assets/*.css | head -1))
+          cat > dist/client/index.html << EOF
+          <!DOCTYPE html>
+          <html lang="en">
+            <head>
+              <meta charset="UTF-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+              <title>Checklist Makeover</title>
+              <link rel="stylesheet" href="/checklist-makeover/assets/$CSS" />
+            </head>
+            <body>
+              <div id="root"></div>
+              <script type="module" src="/checklist-makeover/assets/$JS"></script>
+            </body>
+          </html>
+          EOF
+          cp dist/client/index.html dist/client/404.html
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
-      # Este passo garante que o GitHub encontre algo para servir
-      - name: Verify build output
-        run: |
-          echo "Verificando estrutura da pasta dist:"
-          ls -R dist/
-          if [ ! -d "dist/client" ]; then
-            echo "ERRO: Pasta dist/client não encontrada!"
-            exit 1
-          fi
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Aponta para dist/client onde o TanStack coloca o front-end
           path: './dist/client'
 
       - name: Deploy to GitHub Pages
