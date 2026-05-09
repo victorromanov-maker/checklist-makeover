@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checklist Bem-Estar</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@400;500&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #c084a0;
+      --primary-fg: #fff;
+      --bg: #fdf8f5;
+      --card: #ffffff;
+      --border: rgba(0,0,0,0.08);
+      --fg: #1a1612;
+      --muted: #7a6e68;
+      --secondary-bg: #f5ede8;
+      --blush: #f5d5e0;
+      --sage: #c8d8c0;
+      --clay: #d4956a;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.6;
+    }
+
+    .display { font-family: 'Playfair Display', serif; }
+    .grain { background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); }
+
+    .clay-gradient { background: linear-gradient(135deg, #d4956a, #c084a0); }
+
+    /* Header */
+    header {
+      position: sticky; top: 0; z-index: 40;
+      background: rgba(253,248,245,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+    }
+    .header-inner {
+      max-width: 1280px; margin: auto;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--fg); }
+    .logo-icon {
+      width: 2rem; height: 2rem; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem;
+    }
+    .logo-text { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 600; letter-spacing: -0.02em; }
+    .header-cta { display: none; text-decoration: none; font-size: 0.875rem; font-weight: 500; color: var(--fg); gap: 0.5rem; align-items: center; }
+    @media (min-width: 640px) { .header-cta { display: flex; } }
+    .header-cta:hover { color: var(--primary); }
+
+    /* Buttons */
+    .cta-btn {
+      display: inline-flex; align-items: center; gap: 0.75rem;
+      border-radius: 9999px; padding: 1rem 2rem;
+      font-size: 1rem; font-weight: 500;
+      color: var(--primary-fg);
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 24px rgba(192,132,160,0.25);
+    }
+    .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(192,132,160,0.35); }
+    .cta-btn svg { transition: transform 0.2s; }
+    .cta-btn:hover svg { transform: translateX(4px); }
+
+    /* Hero */
+    .hero { max-width: 1280px; margin: auto; padding: 3rem 1.5rem 5rem; }
+    @media (min-width: 1024px) { .hero { display: grid; grid-template-columns: 7fr 5fr; gap: 4rem; align-items: center; padding: 5rem 1.5rem 8rem; } }
+
+    .hero-eyebrow { display: flex; align-items: center; gap: 0.75rem; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--primary); font-weight: 500; }
+    .hero-eyebrow-line { height: 1px; width: 2rem; background: var(--primary); }
+
+    h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.8rem, 7vw, 5rem); line-height: 0.95; letter-spacing: -0.02em; margin-top: 1.5rem; }
+    h1 em { color: var(--primary); font-style: italic; font-weight: 400; }
+
+    .hero-desc { margin-top: 2rem; max-width: 36rem; font-size: 1.1rem; color: var(--muted); line-height: 1.7; }
+
+    .hero-actions { margin-top: 2.5rem; display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; }
+    .secure-badge { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: var(--muted); }
+
+    .hero-stats { margin-top: 3rem; display: flex; align-items: center; gap: 2rem; font-size: 0.875rem; }
+    .stat-num { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 600; }
+    .stat-label { color: var(--muted); }
+    .stat-divider { height: 2.5rem; width: 1px; background: var(--border); }
+    .star-inline { color: var(--primary); font-size: 0.9rem; }
+
+    /* Price card */
+    .price-card-wrap { position: relative; margin-top: 2rem; }
+    @media (min-width: 1024px) { .price-card-wrap { margin-top: 0; } }
+    .price-card-bg { position: absolute; inset: -1rem; border-radius: 1.5rem; background: rgba(245,213,224,0.5); transform: rotate(-2deg); }
+    .price-card {
+      position: relative;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 1.5rem;
+      padding: 2rem 2.5rem;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+    }
+    .card-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+    .card-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--muted); }
+    .discount-badge { background: rgba(192,132,160,0.12); color: var(--primary); font-size: 0.75rem; font-weight: 500; padding: 0.25rem 0.75rem; border-radius: 9999px; }
+    .price-was { color: var(--muted); text-decoration: line-through; font-size: 1.1rem; }
+    .price-now { display: flex; align-items: baseline; gap: 0.5rem; margin-top: 0.5rem; }
+    .price-currency { font-family: 'Playfair Display', serif; font-size: 1.5rem; }
+    .price-amount { font-family: 'Playfair Display', serif; font-size: 5rem; font-weight: 600; letter-spacing: -0.04em; line-height: 1; }
+    .price-note { font-size: 0.875rem; color: var(--muted); margin-top: 0.5rem; }
+    .card-cta {
+      margin-top: 2rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+      width: 100%; border-radius: 9999px; padding: 1rem;
+      color: white; text-decoration: none; font-weight: 500;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(192,132,160,0.25);
+    }
+    .card-cta:hover { transform: translateY(-2px); }
+    .card-checklist { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.875rem; color: var(--muted); list-style: none; }
+    .card-checklist li { display: flex; align-items: center; gap: 0.5rem; }
+    .check-icon { color: var(--primary); flex-shrink: 0; }
+
+    /* Marquee */
+    .marquee-section { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: rgba(245,237,232,0.5); overflow: hidden; }
+    .marquee-track { display: flex; white-space: nowrap; padding: 1.25rem 0; font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.5rem; color: var(--muted); animation: marquee 20s linear infinite; }
+    .marquee-group { display: flex; align-items: center; gap: 3rem; padding-right: 3rem; flex-shrink: 0; }
+    .marquee-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(192,132,160,0.6); }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* Sections */
+    section { padding: 6rem 1.5rem; }
+    .section-inner { max-width: 1280px; margin: auto; }
+    .section-inner-narrow { max-width: 64rem; margin: auto; text-align: center; }
+
+    .eyebrow { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--primary); font-weight: 500; }
+    h2 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3.5rem); letter-spacing: -0.02em; margin-top: 1rem; line-height: 1.1; }
+    h2 em { color: var(--primary); font-style: italic; font-weight: 400; }
+
+    /* iFood section */
+    .ifood-price-box {
+      display: inline-flex; flex-direction: column; align-items: center; gap: 0.25rem;
+      border: 1px solid var(--border); background: var(--card);
+      border-radius: 1rem; padding: 1.5rem 2.5rem;
+      margin-top: 2.5rem;
+    }
+    .ifood-price-box .big-price { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 600; color: var(--primary); }
+
+    /* Topics grid */
+    .topics-section { background: rgba(245,237,232,0.4); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .topics-header { display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 4rem; }
+    @media (min-width: 1024px) { .topics-header { flex-direction: row; align-items: flex-end; justify-content: space-between; } }
+    .topics-desc { color: var(--muted); max-width: 22rem; font-size: 1rem; }
+
+    .topics-grid { display: grid; gap: 1.25rem; }
+    @media (min-width: 640px) { .topics-grid { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 1024px) { .topics-grid { grid-template-columns: 1fr 1fr 1fr; } }
+
+    .topic-card {
+      position: relative; overflow: hidden;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 1.5rem; padding: 1.75rem;
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    }
+    .topic-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(192,132,160,0.12); border-color: rgba(192,132,160,0.3); }
+    .topic-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.5rem; }
+    .topic-icon-wrap { width: 3.5rem; height: 3.5rem; border-radius: 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; transition: transform 0.3s; }
+    .topic-card:hover .topic-icon-wrap { transform: scale(1.1) rotate(-3deg); }
+    .tone-blush { background: rgba(245,213,224,0.5); border: 1px solid rgba(245,213,224,0.6); }
+    .tone-clay { background: linear-gradient(135deg, #d4956a, #c084a0); box-shadow: 0 4px 16px rgba(192,132,160,0.25); }
+    .tone-sage { background: rgba(200,216,192,0.3); border: 1px solid rgba(200,216,192,0.5); }
+    .topic-tag { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--muted); background: rgba(245,237,232,0.6); border-radius: 9999px; padding: 0.25rem 0.75rem; }
+    .topic-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; letter-spacing: -0.01em; margin-bottom: 0.5rem; line-height: 1.2; }
+    .topic-desc { color: var(--muted); font-size: 0.875rem; line-height: 1.6; }
+    .topic-footer { margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .topic-num { font-family: monospace; font-size: 0.75rem; color: var(--primary); letter-spacing: 0.1em; }
+    .topic-arrow { color: var(--muted); font-size: 1rem; transition: all 0.2s; }
+    .topic-card:hover .topic-arrow { color: var(--primary); transform: translateX(4px); }
+
+    /* Includes */
+    .includes-grid { display: grid; gap: 3rem; }
+    @media (min-width: 1024px) { .includes-grid { grid-template-columns: 5fr 7fr; align-items: start; } }
+    .includes-sticky { }
+    @media (min-width: 1024px) { .includes-sticky { position: sticky; top: 6rem; } }
+    .includes-desc { margin-top: 1.5rem; color: var(--muted); }
+    .includes-list { list-style: none; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .includes-item { display: flex; align-items: flex-start; gap: 1.5rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border); }
+    .includes-item:last-child { border-bottom: none; }
+    .includes-num { font-family: monospace; font-size: 0.75rem; color: var(--primary); padding-top: 0.25rem; width: 2rem; flex-shrink: 0; }
+    .includes-text { flex: 1; font-size: 1.1rem; }
+    .includes-check { color: var(--primary); margin-top: 0.25rem; flex-shrink: 0; }
+
+    /* Testimonials */
+    .testimonials-section { background: rgba(192,132,160,0.06); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .testimonials-grid { display: grid; gap: 1.5rem; margin-top: 4rem; }
+    @media (min-width: 768px) { .testimonials-grid { grid-template-columns: 1fr 1fr 1fr; } }
+    .testimonial-card { background: var(--card); border: 1px solid var(--border); border-radius: 1.25rem; padding: 2rem; display: flex; flex-direction: column; }
+    .stars { display: flex; gap: 2px; margin-bottom: 1rem; color: var(--primary); font-size: 1rem; }
+    .testimonial-text { font-family: 'Playfair Display', serif; font-size: 1.2rem; line-height: 1.4; flex: 1; }
+    .testimonial-footer { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+    .testimonial-name { font-weight: 500; }
+    .testimonial-city { font-size: 0.875rem; color: var(--muted); }
+
+    /* Final CTA */
+    .final-cta-section { text-align: center; }
+    .final-cta-h2 { font-family: 'Playfair Display', serif; font-size: clamp(2.5rem, 6vw, 4.5rem); letter-spacing: -0.02em; line-height: 1; }
+    .final-cta-h2 em { color: var(--primary); font-style: italic; font-weight: 400; }
+    .final-cta-desc { margin-top: 2rem; font-size: 1.1rem; color: var(--muted); max-width: 36rem; margin-left: auto; margin-right: auto; }
+    .final-box {
+      display: inline-flex; flex-direction: column; align-items: center; gap: 0.5rem;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 1.5rem; padding: 2.5rem;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.06);
+      margin-top: 3rem;
+    }
+    .final-was { color: var(--muted); text-decoration: line-through; }
+    .final-price { font-family: 'Playfair Display', serif; font-size: 4.5rem; font-weight: 600; color: var(--primary); }
+    .final-note { font-size: 0.875rem; color: var(--muted); margin-bottom: 1rem; }
+
+    /* Footer */
+    footer { border-top: 1px solid var(--border); }
+    .footer-inner { max-width: 1280px; margin: auto; padding: 2.5rem 1.5rem; display: flex; flex-direction: column; gap: 1rem; align-items: center; justify-content: space-between; font-size: 0.875rem; color: var(--muted); }
+    @media (min-width: 640px) { .footer-inner { flex-direction: row; } }
+
+    /* Floating CTA */
+    .floating-cta {
+      position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 50;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      border-radius: 9999px; padding: 0.75rem 1.25rem;
+      color: white; text-decoration: none; font-size: 0.875rem; font-weight: 500;
+      box-shadow: 0 8px 32px rgba(192,132,160,0.4);
+      transition: transform 0.2s;
+    }
+    .floating-cta:hover { transform: translateY(-2px); }
+
+    svg.icon { width: 1.25rem; height: 1.25rem; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+    svg.icon-sm { width: 1rem; height: 1rem; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+    .star-fill { fill: var(--primary); stroke: var(--primary); }
+  </style>
+</head>
+<body class="grain">
+
+<!-- Header -->
+<header>
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <div class="logo-icon clay-gradient">✨</div>
+      <span class="logo-text">Checklist&nbsp;Bem-Estar</span>
+    </a>
+    <a href="https://victorromanov-maker.github.io/checklist/COLE_AQUI_LINK_MERCADO_PAGO" class="header-cta">
+      Quero por R$ 9,90
+      <svg class="icon-sm" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+  </div>
+</header>
+
+<!-- Hero -->
+<section style="padding: 0;">
+  <div class="hero">
+    <div>
+      <div class="hero-eyebrow">
+        <span class="hero-eyebrow-line"></span>
+        Edição 01 · Material digital
+      </div>
+      <h1>O guia que cuida da sua <em>beleza</em> &amp; <em>saúde</em>.</h1>
+      <p class="hero-desc">Mais de 30 dicas práticas, em linguagem simples, sem enrolação. Tudo que você precisa para se cuidar de verdade — num único lugar.</p>
+      <div class="hero-actions">
+        <a href="https://victorromanov-maker.github.io/checklist/COLE_AQUI_LINK_MERCADO_PAGO" class="cta-btn clay-gradient">
+          Quero meu Checklist
+          <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <div class="secure-badge">
+          <svg class="icon-sm" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Pagamento 100% seguro · Pix
+        </div>
+      </div>
+      <div class="hero-stats">
+        <div>
+          <div class="stat-num display">30+</div>
+          <div class="stat-label">dicas práticas</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div>
+          <div class="stat-num display">7</div>
+          <div class="stat-label">categorias</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div>
+          <div class="stat-num display">4.9 <span class="star-inline">★</span></div>
+          <div class="stat-label">avaliação</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Price card -->
+    <div class="price-card-wrap">
+      <div class="price-card-bg"></div>
+      <div class="price-card">
+        <div class="card-top">
+          <span class="card-label">Acesso imediato</span>
+          <span class="discount-badge">-67%</span>
+        </div>
+        <div class="price-was">De R$ 29,90</div>
+        <div class="price-now">
+          <span class="price-currency display">R$</span>
+          <span class="price-amount display">9,90</span>
+        </div>
+        <div class="price-note">no Pix · funciona no celular, tablet e PC</div>
+        <a href="https://victorromanov-maker.github.io/checklist/COLE_AQUI_LINK_MERCADO_PAGO" class="card-cta clay-gradient">
+          Garantir meu acesso
+          <svg class="icon-sm" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <ul class="card-checklist">
+          <li><svg class="icon-sm check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Pagamento via Mercado Pago</li>
+          <li><svg class="icon-sm check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Sem mensalidade — é seu pra sempre</li>
+          <li><svg class="icon-sm check-icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Receba na hora por e-mail</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Marquee -->
+<div class="marquee-section">
+  <div class="marquee-track">
+    <div class="marquee-group">
+      <span>pele</span><span class="marquee-dot"></span>
+      <span>cabelo</span><span class="marquee-dot"></span>
+      <span>alimentação</span><span class="marquee-dot"></span>
+      <span>sono</span><span class="marquee-dot"></span>
+      <span>autoestima</span><span class="marquee-dot"></span>
+      <span>exames</span><span class="marquee-dot"></span>
+      <span>skincare</span><span class="marquee-dot"></span>
+      <span>energia</span><span class="marquee-dot"></span>
+      <span>mente</span><span class="marquee-dot"></span>
+    </div>
+    <div class="marquee-group" aria-hidden="true">
+      <span>pele</span><span class="marquee-dot"></span>
+      <span>cabelo</span><span class="marquee-dot"></span>
+      <span>alimentação</span><span class="marquee-dot"></span>
+      <span>sono</span><span class="marquee-dot"></span>
+      <span>autoestima</span><span class="marquee-dot"></span>
+      <span>exames</span><span class="marquee-dot"></span>
+      <span>skincare</span><span class="marquee-dot"></span>
+      <span>energia</span><span class="marquee-dot"></span>
+      <span>mente</span><span class="marquee-dot"></span>
+    </div>
+  </div>
+</div>
+
+<!-- iFood comparison -->
+<section>
+  <div class="section-inner-narrow">
+    <div class="eyebrow">Reflexão</div>
+    <h2>Quanto você gasta num <em>iFood</em> sem pensar?</h2>
+    <p style="margin-top:1.5rem;font-size:1.1rem;color:var(--muted);line-height:1.7;max-width:38rem;margin-left:auto;margin-right:auto;">
+      A gente pede um lanche, um açaí, uma pizza — e nem percebe o dinheiro ir embora. Por <strong style="color:var(--fg)">menos do que isso</strong>, você leva um guia completo que vai cuidar da sua beleza, da sua saúde e — principalmente — da sua autoestima.
+    </p>
+    <div class="ifood-price-box">
+      <div style="font-size:0.875rem;color:var(--muted)">Por apenas</div>
+      <div class="big-price">R$ 9,90</div>
+      <div style="font-size:0.875rem;color:var(--muted)">algo que fica com você pra sempre 💖</div>
+    </div>
+  </div>
+</section>
+
+<!-- Topics -->
+<div class="topics-section">
+  <section>
+    <div class="section-inner">
+      <div class="topics-header">
+        <div>
+          <div class="eyebrow">O que está incluído</div>
+          <h2>Tudo que você vai <em>aprender</em>.</h2>
+        </div>
+        <p class="topics-desc">10 áreas essenciais cobertas em profundidade — do skincare ao bem-estar mental.</p>
+      </div>
+
+      <div class="topics-grid">
+
+        <article class="topic-card">
+          <div class="topic-card-top">
+            <div class="topic-icon-wrap tone-blush">💧</div>
+            <span class="topic-tag">pele</span>
+          </div>
+          <h3 class="topic-title display">Hidratação da pele</h3>
+          <p class="topic-desc">O que aplicar de manhã e à noite para manter a pele viçosa, sem gastar muito.</p>
+          <div class="topic-footer">
+            <span class="topic-num">01 / 10</span>
+            <span class="topic-arrow">→</span>
+          </div>
+        </article>
+
+        <article class="topic-card">
+          <div class="topic-card-top">
+            <div class="topic-icon-wrap tone-clay" style="color:white">☀️</div>
+            <span class="topic-tag">essencial</span>
+          </div>
+          <h3 class="topic-title display">Protetor solar diário</h3>
+          <p class="topic-desc">Por que o FPS 30+ é o item mais importante da sua rotina e como usar certo.</p>
+          <div class="topic-footer">
+            <span class="topic-num">02 / 10</span>
+            <span class="topic-arrow">→</span>
+          </div>
+        </article>
+
+        <article class="topic-card">
+          <div class="topic-card-top">
+            <div class="topic-icon-wrap tone-sage">✂️</div>
+            <span class="topic-tag">cabelo</span>
+          </div>
+          <h3 class="topic-title display">Rotina capilar por tipo</h3>
+          <p class="topic-desc">Como cuidar do cabelo liso, ondulado, cacheado ou crespo do jeito certo.</p>
+          <div class="topic-footer">
+            <span class="topic-num">03 / 10</span>
+            <span class="topic-arrow">→</span>
+          </div>
+        </article>
+
+        <article class="topic-card">
+          <div class="topic-card-top">
+            <div class="topic-icon-wrap tone-blush">💅</div>
+            <span class="topic-tag">unhas</span>
+          </div>
+          <h3 class="topic-title display">Unhas bonitas em casa</h3>
+          <p class="topic-desc">Dicas simples para ter unhas cuidadas todo dia sem precisar ir ao salão.</p>
+          <div class="topic-footer">
+            <span class="topic-num">04 / 10</span>
+            <span class="topic-arrow">→</span>
+          </div>
+        </article>
+
+        <article class="topic-card">
+          <div class="topic-card-top">
+            <div class="topic-icon-wrap tone-sage">🥤</div>
+            <span class="topic-tag">saúde</span>
+          </div>
+          <h3 class="topic-title display">Hidratação diária</h3>
+          <p class="topic-desc">A quantidade certa de água para o seu peso e como criar o hábito sem esquecer.</p>
+          <div class="topic-footer">
+            <span class="topic-num">05 / 10</span>
+            <span class="topic-arrow">→</span>
+          </div>
+        </article>
+
+        <article class="topic-card">
+          <div class="topic-card-top">
+            <div class="topic-icon-wrap tone-clay" style="color:white">🌙</div>
+            <span class="topic-tag">bem-estar</span>
+          </div>
+          <h3 class="topic-title display">Qualidade do sono</h3>
+          <p class="topic-desc">Rotina noturna que melhora o sono — e por que isso reflete na sua beleza.</p>
+          <div class="topic-footer">
+            <span class="topic-num">06 / 10</span>
+            <span class="topic-arrow">→</span>
+          </div>
+        </article>
+
+        <article class="topic-card">
+          <div class="topic-card-top">
+            <div class="topic-icon-wrap tone-sage">🥗</div>
+            <span class="topic-tag">saúde</span>
+          </div>
+          <h3 class="topic-title display">Alimentação anti-inflamatória</h3>
+          <p class="topic-desc">O que incluir e o que reduzir para ter mais energia, menos inchaço e pele bonita.</p>
+          <div class="topic-footer">
+            <span class="topic-num">07 / 10</span>
+            <span class="topic-arrow">→</span>
+          </div>
+        </article>
+
+        <article class="topic-card">
+          <div class="topic-card-top">
+            <div class="topic-icon-wrap tone-blush">🩺</div>
+            <span class="topic-tag">prevenção</span>
+          </div>
+          <h3 class="topic-title display">Exames preventivos por idade</h3>
+          <p class="topic-desc">Os exames que toda mulher deve fazer — com frequência e alertas por faixa etária.</p>
+          <div class="topic-footer">
+            <span class="topic-num">08 / 10</span>
+            <span class="topic-arrow">→</span>
+          </div>
+        </article>
+
+        <article class="topic-card">
+          <div class="topic-card-top">
+            <div class="topic-icon-wrap tone-clay" style="color:white">🧠</div>
+            <span class="topic-tag">mente</span>
+          </div>
+          <h3 class="topic-title display">Saúde mental e autoestima</h3>
+          <p class="topic-desc">Pequenos hábitos diários que fortalecem a autoconfiança e fazem você se sentir bem.</p>
+          <div class="topic-footer">
+            <span class="topic-num">09 / 10</span>
+            <span class="topic-arrow">→</span>
+          </div>
+        </article>
+
+        <article class="topic-card">
+          <div class="topic-card-top">
+            <div class="topic-icon-wrap tone-blush">👁️</div>
+            <span class="topic-tag">make</span>
+          </div>
+          <h3 class="topic-title display">Maquiagem rápida de 5 min</h3>
+          <p class="topic-desc">Um passo a passo minimalista para você se sentir bem mesmo nos dias corridos.</p>
+          <div class="topic-footer">
+            <span class="topic-num">10 / 10</span>
+            <span class="topic-arrow">→</span>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Includes -->
+<section>
+  <div class="section-inner">
+    <div class="includes-grid">
+      <div class="includes-sticky">
+        <div class="eyebrow">Tudo incluso</div>
+        <h2>O que você leva nesse <em>guia</em>.</h2>
+        <p class="includes-desc">Um pacote completo, pronto para você abrir e começar hoje mesmo.</p>
+        <a href="https://victorromanov-maker.github.io/checklist/COLE_AQUI_LINK_MERCADO_PAGO" class="cta-btn clay-gradient" style="margin-top:2rem">
+          Pegar o meu agora
+          <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+      <ul class="includes-list">
+        <li class="includes-item">
+          <span class="includes-num">01</span>
+          <div class="includes-text">Checklist completo imprimível de beleza e saúde</div>
+          <svg class="icon-sm includes-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </li>
+        <li class="includes-item">
+          <span class="includes-num">02</span>
+          <div class="includes-text">Rotina simples, sem termos difíceis ou complicados</div>
+          <svg class="icon-sm includes-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </li>
+        <li class="includes-item">
+          <span class="includes-num">03</span>
+          <div class="includes-text">Dicas práticas que cabem na sua vida real</div>
+          <svg class="icon-sm includes-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </li>
+        <li class="includes-item">
+          <span class="includes-num">04</span>
+          <div class="includes-text">Guia de produtos por faixa de orçamento</div>
+          <svg class="icon-sm includes-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </li>
+        <li class="includes-item">
+          <span class="includes-num">05</span>
+          <div class="includes-text">Tabela de exames preventivos por idade</div>
+          <svg class="icon-sm includes-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </li>
+        <li class="includes-item">
+          <span class="includes-num">06</span>
+          <div class="includes-text">Bônus: 7 hábitos que mudam sua autoestima</div>
+          <svg class="icon-sm includes-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<div class="testimonials-section">
+  <section>
+    <div class="section-inner">
+      <div style="text-align:center">
+        <div class="eyebrow">Depoimentos</div>
+        <h2>Quem já tem, <em>amou</em>. 💖</h2>
+      </div>
+      <div class="testimonials-grid">
+        <figure class="testimonial-card">
+          <div class="stars">★★★★★</div>
+          <blockquote class="testimonial-text display">"Nunca pensei que por R$ 9,90 teria acesso a um material tão completo. Já mudei minha rotina de skincare e tô me sentindo outra pessoa."</blockquote>
+          <figcaption class="testimonial-footer">
+            <div class="testimonial-name">Ana C.</div>
+            <div class="testimonial-city">São Paulo</div>
+          </figcaption>
+        </figure>
+        <figure class="testimonial-card">
+          <div class="stars">★★★★★</div>
+          <blockquote class="testimonial-text display">"A parte dos exames preventivos me abriu o olho! Nunca tinha parado pra pensar nisso. Já marquei 3 exames que estava adiando."</blockquote>
+          <figcaption class="testimonial-footer">
+            <div class="testimonial-name">Juliana R.</div>
+            <div class="testimonial-city">Curitiba</div>
+          </figcaption>
+        </figure>
+        <figure class="testimonial-card">
+          <div class="stars">★★★★★</div>
+          <blockquote class="testimonial-text display">"O bônus dos 7 hábitos de autoestima vale mais do que o preço inteiro. Simples, direto e funciona. Recomendo demais!"</blockquote>
+          <figcaption class="testimonial-footer">
+            <div class="testimonial-name">Fernanda M.</div>
+            <div class="testimonial-city">Maringá</div>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Final CTA -->
+<section class="final-cta-section">
+  <div class="section-inner-narrow">
+    <h2 class="final-cta-h2">Sua <em>autoestima</em> agradece.<br/>Sua <em>saúde</em> também.</h2>
+    <p class="final-cta-desc">Acesso imediato após o pagamento. Funciona no celular, tablet e computador. Sem mensalidade — é seu para sempre.</p>
+    <div class="final-box">
+      <div class="final-was">De R$ 29,90</div>
+      <div class="final-price">R$ 9,90</div>
+      <div class="final-note">no Pix · acesso imediato</div>
+      <a href="https://victorromanov-maker.github.io/checklist/COLE_AQUI_LINK_MERCADO_PAGO" class="cta-btn clay-gradient">
+        Quero meu Checklist agora
+        <svg class="icon" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-inner">
+    <div>© <span id="year"></span> Checklist Bem-Estar. Todos os direitos reservados.</div>
+    <div style="display:flex;align-items:center;gap:0.5rem">
+      <svg class="icon-sm" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Pagamento processado pelo Mercado Pago
+    </div>
+  </div>
+</footer>
+
+<!-- Floating CTA -->
+<a href="https://victorromanov-maker.github.io/checklist/COLE_AQUI_LINK_MERCADO_PAGO" class="floating-cta clay-gradient">
+  ✨ R$ 9,90
+</a>
+
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
