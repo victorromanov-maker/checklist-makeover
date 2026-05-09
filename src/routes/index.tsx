@@ -8,17 +8,23 @@ export const Route = createFileRoute("/")({
 const CHECKOUT_URL = "https://victorromanov-maker.github.io/checklist/COLE_AQUI_LINK_MERCADO_PAGO";
 
 const topics = [
-  { icon: "🧴", tag: "pele", title: "Hidratação da pele", desc: "O que aplicar de manhã e à noite para manter a pele viçosa, sem gastar muito." },
-  { icon: "☀️", tag: "essencial", title: "Protetor solar diário", desc: "Por que o FPS 30+ é o item mais importante da sua rotina e como usar certo." },
-  { icon: "💇", tag: "cabelo", title: "Rotina capilar por tipo", desc: "Como cuidar do cabelo liso, ondulado, cacheado ou crespo do jeito certo." },
-  { icon: "💅", tag: "unhas", title: "Unhas bonitas em casa", desc: "Dicas simples para ter unhas cuidadas todo dia sem precisar ir ao salão." },
-  { icon: "💧", tag: "saúde", title: "Hidratação diária", desc: "A quantidade certa de água para o seu peso e como criar o hábito sem esquecer." },
-  { icon: "😴", tag: "bem-estar", title: "Qualidade do sono", desc: "Rotina noturna que melhora o sono — e por que isso reflete na sua beleza." },
-  { icon: "🥗", tag: "saúde", title: "Alimentação anti-inflamatória", desc: "O que incluir e o que reduzir para ter mais energia, menos inchaço e pele bonita." },
-  { icon: "🩺", tag: "prevenção", title: "Exames preventivos por idade", desc: "Os exames que toda mulher deve fazer — com frequência e alertas por faixa etária." },
-  { icon: "🧘", tag: "mente", title: "Saúde mental e autoestima", desc: "Pequenos hábitos diários que fortalecem a autoconfiança e fazem você se sentir bem." },
-  { icon: "👁️", tag: "make", title: "Maquiagem rápida de 5 min", desc: "Um passo a passo minimalista para você se sentir bem mesmo nos dias corridos." },
+  { Icon: Droplets, tone: "blush", tag: "pele", title: "Hidratação da pele", desc: "O que aplicar de manhã e à noite para manter a pele viçosa, sem gastar muito." },
+  { Icon: Sun, tone: "clay", tag: "essencial", title: "Protetor solar diário", desc: "Por que o FPS 30+ é o item mais importante da sua rotina e como usar certo." },
+  { Icon: Scissors, tone: "sage", tag: "cabelo", title: "Rotina capilar por tipo", desc: "Como cuidar do cabelo liso, ondulado, cacheado ou crespo do jeito certo." },
+  { Icon: Hand, tone: "blush", tag: "unhas", title: "Unhas bonitas em casa", desc: "Dicas simples para ter unhas cuidadas todo dia sem precisar ir ao salão." },
+  { Icon: GlassWater, tone: "sage", tag: "saúde", title: "Hidratação diária", desc: "A quantidade certa de água para o seu peso e como criar o hábito sem esquecer." },
+  { Icon: Moon, tone: "clay", tag: "bem-estar", title: "Qualidade do sono", desc: "Rotina noturna que melhora o sono — e por que isso reflete na sua beleza." },
+  { Icon: Salad, tone: "sage", tag: "saúde", title: "Alimentação anti-inflamatória", desc: "O que incluir e o que reduzir para ter mais energia, menos inchaço e pele bonita." },
+  { Icon: Stethoscope, tone: "blush", tag: "prevenção", title: "Exames preventivos por idade", desc: "Os exames que toda mulher deve fazer — com frequência e alertas por faixa etária." },
+  { Icon: Brain, tone: "clay", tag: "mente", title: "Saúde mental e autoestima", desc: "Pequenos hábitos diários que fortalecem a autoconfiança e fazem você se sentir bem." },
+  { Icon: Eye, tone: "blush", tag: "make", title: "Maquiagem rápida de 5 min", desc: "Um passo a passo minimalista para você se sentir bem mesmo nos dias corridos." },
 ];
+
+const toneStyles: Record<string, { wrap: string; icon: string }> = {
+  blush: { wrap: "bg-blush/50 ring-1 ring-blush/60", icon: "text-clay" },
+  clay: { wrap: "clay-gradient shadow-lg shadow-primary/20", icon: "text-primary-foreground" },
+  sage: { wrap: "bg-sage/30 ring-1 ring-sage/50", icon: "text-foreground/80" },
+};
 
 const includes = [
   "Checklist completo imprimível de beleza e saúde",
