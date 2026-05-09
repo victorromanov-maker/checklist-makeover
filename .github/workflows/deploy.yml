@@ -34,9 +34,13 @@ jobs:
 
       - name: Create static index.html
         run: |
-          JS=$(ls dist/client/assets/*.js | grep -v 'index-' | head -1 || ls dist/client/assets/index-*.js | head -1)
-          JS=$(basename $JS)
+          echo "Arquivos em dist/client/assets:"
+          ls dist/client/assets/
+
+          JS1=$(basename $(ls dist/client/assets/*.js | sed -n '1p'))
+          JS2=$(basename $(ls dist/client/assets/*.js | sed -n '2p'))
           CSS=$(basename $(ls dist/client/assets/*.css | head -1))
+
           cat > dist/client/index.html << EOF
           <!DOCTYPE html>
           <html lang="en">
@@ -48,11 +52,15 @@ jobs:
             </head>
             <body>
               <div id="root"></div>
-              <script type="module" src="/checklist-makeover/assets/$JS"></script>
+              <script type="module" src="/checklist-makeover/assets/$JS1"></script>
+              <script type="module" src="/checklist-makeover/assets/$JS2"></script>
             </body>
           </html>
           EOF
+
           cp dist/client/index.html dist/client/404.html
+          echo "index.html criado com sucesso!"
+          cat dist/client/index.html
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
