@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ArrowRight, Check, Star, Lock, Sparkles } from "lucide-react";
+import { ArrowRight, Check, Star, Lock, Sparkles, Droplets, Sun, Scissors, Hand, GlassWater, Moon, Salad, Stethoscope, Brain, Eye } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -8,17 +8,23 @@ export const Route = createFileRoute("/")({
 const CHECKOUT_URL = "https://victorromanov-maker.github.io/checklist/COLE_AQUI_LINK_MERCADO_PAGO";
 
 const topics = [
-  { icon: "🧴", tag: "pele", title: "Hidratação da pele", desc: "O que aplicar de manhã e à noite para manter a pele viçosa, sem gastar muito." },
-  { icon: "☀️", tag: "essencial", title: "Protetor solar diário", desc: "Por que o FPS 30+ é o item mais importante da sua rotina e como usar certo." },
-  { icon: "💇", tag: "cabelo", title: "Rotina capilar por tipo", desc: "Como cuidar do cabelo liso, ondulado, cacheado ou crespo do jeito certo." },
-  { icon: "💅", tag: "unhas", title: "Unhas bonitas em casa", desc: "Dicas simples para ter unhas cuidadas todo dia sem precisar ir ao salão." },
-  { icon: "💧", tag: "saúde", title: "Hidratação diária", desc: "A quantidade certa de água para o seu peso e como criar o hábito sem esquecer." },
-  { icon: "😴", tag: "bem-estar", title: "Qualidade do sono", desc: "Rotina noturna que melhora o sono — e por que isso reflete na sua beleza." },
-  { icon: "🥗", tag: "saúde", title: "Alimentação anti-inflamatória", desc: "O que incluir e o que reduzir para ter mais energia, menos inchaço e pele bonita." },
-  { icon: "🩺", tag: "prevenção", title: "Exames preventivos por idade", desc: "Os exames que toda mulher deve fazer — com frequência e alertas por faixa etária." },
-  { icon: "🧘", tag: "mente", title: "Saúde mental e autoestima", desc: "Pequenos hábitos diários que fortalecem a autoconfiança e fazem você se sentir bem." },
-  { icon: "👁️", tag: "make", title: "Maquiagem rápida de 5 min", desc: "Um passo a passo minimalista para você se sentir bem mesmo nos dias corridos." },
+  { Icon: Droplets, tone: "blush", tag: "pele", title: "Hidratação da pele", desc: "O que aplicar de manhã e à noite para manter a pele viçosa, sem gastar muito." },
+  { Icon: Sun, tone: "clay", tag: "essencial", title: "Protetor solar diário", desc: "Por que o FPS 30+ é o item mais importante da sua rotina e como usar certo." },
+  { Icon: Scissors, tone: "sage", tag: "cabelo", title: "Rotina capilar por tipo", desc: "Como cuidar do cabelo liso, ondulado, cacheado ou crespo do jeito certo." },
+  { Icon: Hand, tone: "blush", tag: "unhas", title: "Unhas bonitas em casa", desc: "Dicas simples para ter unhas cuidadas todo dia sem precisar ir ao salão." },
+  { Icon: GlassWater, tone: "sage", tag: "saúde", title: "Hidratação diária", desc: "A quantidade certa de água para o seu peso e como criar o hábito sem esquecer." },
+  { Icon: Moon, tone: "clay", tag: "bem-estar", title: "Qualidade do sono", desc: "Rotina noturna que melhora o sono — e por que isso reflete na sua beleza." },
+  { Icon: Salad, tone: "sage", tag: "saúde", title: "Alimentação anti-inflamatória", desc: "O que incluir e o que reduzir para ter mais energia, menos inchaço e pele bonita." },
+  { Icon: Stethoscope, tone: "blush", tag: "prevenção", title: "Exames preventivos por idade", desc: "Os exames que toda mulher deve fazer — com frequência e alertas por faixa etária." },
+  { Icon: Brain, tone: "clay", tag: "mente", title: "Saúde mental e autoestima", desc: "Pequenos hábitos diários que fortalecem a autoconfiança e fazem você se sentir bem." },
+  { Icon: Eye, tone: "blush", tag: "make", title: "Maquiagem rápida de 5 min", desc: "Um passo a passo minimalista para você se sentir bem mesmo nos dias corridos." },
 ];
+
+const toneStyles: Record<string, { wrap: string; icon: string }> = {
+  blush: { wrap: "bg-blush/50 ring-1 ring-blush/60", icon: "text-clay" },
+  clay: { wrap: "clay-gradient shadow-lg shadow-primary/20", icon: "text-primary-foreground" },
+  sage: { wrap: "bg-sage/30 ring-1 ring-sage/50", icon: "text-foreground/80" },
+};
 
 const includes = [
   "Checklist completo imprimível de beleza e saúde",
@@ -188,22 +194,37 @@ function Index() {
             <p className="text-muted-foreground max-w-sm">10 áreas essenciais cobertas em profundidade — do skincare ao bem-estar mental.</p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-px bg-border rounded-2xl overflow-hidden border border-border">
-            {topics.map((t, i) => (
-              <article key={i} className="bg-background p-8 hover:bg-card transition-colors group">
-                <div className="flex items-start justify-between mb-6">
-                  <div className="size-14 rounded-2xl bg-blush/50 flex items-center justify-center text-3xl">
-                    {t.icon}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {topics.map((t, i) => {
+              const tone = toneStyles[t.tone];
+              const Icon = t.Icon;
+              return (
+                <article
+                  key={i}
+                  className="group relative overflow-hidden rounded-3xl border border-border bg-card p-7 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/10 hover:border-primary/30"
+                >
+                  {/* decorative gradient blob */}
+                  <div className="pointer-events-none absolute -right-12 -top-12 size-40 rounded-full bg-blush/30 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                  <div className="relative flex items-start justify-between mb-6">
+                    <div className={`size-14 rounded-2xl flex items-center justify-center ${tone.wrap} transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-3`}>
+                      <Icon className={`size-7 ${tone.icon}`} strokeWidth={1.6} />
+                    </div>
+                    <span className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground bg-secondary/60 rounded-full px-3 py-1">
+                      {t.tag}
+                    </span>
                   </div>
-                  <span className="text-[10px] uppercase tracking-widest text-muted-foreground border border-border rounded-full px-3 py-1">
-                    {t.tag}
-                  </span>
-                </div>
-                <h3 className="font-display text-2xl tracking-tight mb-2">{t.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">{t.desc}</p>
-                <div className="mt-6 text-xs font-mono text-primary">{String(i + 1).padStart(2, "0")} / 10</div>
-              </article>
-            ))}
+
+                  <h3 className="relative font-display text-2xl tracking-tight mb-2 leading-tight">{t.title}</h3>
+                  <p className="relative text-muted-foreground text-sm leading-relaxed">{t.desc}</p>
+
+                  <div className="relative mt-6 flex items-center justify-between pt-5 border-t border-border/60">
+                    <span className="text-xs font-mono text-primary tracking-wider">{String(i + 1).padStart(2, "0")} / 10</span>
+                    <ArrowRight className="size-4 text-muted-foreground transition-all group-hover:text-primary group-hover:translate-x-1" />
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
