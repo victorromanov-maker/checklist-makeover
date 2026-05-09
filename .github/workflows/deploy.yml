@@ -2,12 +2,17 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: ["main"] # Altere se sua branch principal tiver outro nome
+    branches: ["main"]
+  workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
   build-and-deploy:
@@ -20,20 +25,34 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          # Removido cache npm para evitar o erro de lock file caso ele não exista
 
       - name: Install dependencies
         run: npm install
 
       - name: Build
-        run: npm run build # Certifique-se de que este comando gera uma pasta (ex: dist ou build)
+        run: npm run build
+        env:
+          VITE_BASE_PATH: /checklist-makeover/ # Garante que o build saiba o caminho base
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
+      # Este passo garante que o GitHub encontre algo para servir
+      - name: Verify build output
+        run: |
+          echo "Verificando estrutura da pasta dist:"
+          ls -R dist/
+          if [ ! -d "dist/client" ]; then
+            echo "ERRO: Pasta dist/client não encontrada!"
+            exit 1
+          fi
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './dist/client' # IMPORTANTE: coloque aqui a pasta gerada pelo seu build
+          # Aponta para dist/client onde o TanStack coloca o front-end
+          path: './dist/client'
 
       - name: Deploy to GitHub Pages
         id: deployment
