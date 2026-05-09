@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ArrowRight, Check, Star, Lock, Sparkles } from "lucide-react";
+import { ArrowRight, Check, Star, Lock, Sparkles, Droplets, Sun, Scissors, Hand, GlassWater, Moon, Salad, Stethoscope, Brain, Eye } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: Index,
